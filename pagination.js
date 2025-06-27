@@ -21,3 +21,4 @@ fetchPosts(1).then(posts => {
 fetchPosts(2).then(posts => {
     console.log('Posts on page 2:', posts);
 });
+
