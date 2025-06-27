@@ -1,34 +1,23 @@
- // Sample data
-        const items = Array.from({length: 50}, (_, i) => `Item ${i + 1}`);
-        const itemsPerPage = 5;
-        let currentPage = 1;
-
-        function renderItems(page) {
-            const start = (page - 1) * itemsPerPage;
-            const end = start + itemsPerPage;
-            const itemsToShow = items.slice(start, end);
-            document.getElementById('items').innerHTML = itemsToShow.map(item => `<div>${item}</div>`).join('');
+async function fetchPosts(page) {
+    const url = `https://jsonplaceholder.typicode.com/posts?_page=${page}&_limit=10`;
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
+        const posts = await response.json();
+        return posts;
+    } catch (error) {
+        console.error('Error fetching posts:', error);
+        return [];
+    }
+}
 
-        function renderPagination() {
-            const pageCount = Math.ceil(items.length / itemsPerPage);
-            const pagination = document.getElementById('pagination');
-            pagination.innerHTML = '';
+// Test the function
+fetchPosts(1).then(posts => {
+    console.log('Posts on page 1:', posts);
+});
 
-            for (let i = 1; i <= pageCount; i++) {
-                const li = document.createElement('li');
-                li.className = i === currentPage ? 'active' : '';
-                const btn = document.createElement('button');
-                btn.textContent = i;
-                btn.onclick = () => {
-                    currentPage = i;
-                    renderItems(currentPage);
-                    renderPagination();
-                };
-                li.appendChild(btn);
-                pagination.appendChild(li);
-            }
-        }
-
-        renderItems(currentPage);
-        renderPagination();
+fetchPosts(2).then(posts => {
+    console.log('Posts on page 2:', posts);
+});
